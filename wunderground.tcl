@@ -3,10 +3,10 @@ package require Expect 5.40
 package require cmdline
 
 set timeout -1
-
-set env(TERM) vt100	;# actual value doesn't matter, just has to be set
+set code "nyc"
 
 spawn telnet rainmaker.wunderground.com 3000
+
 while {1} {
 	expect timeout {
 		send_user "failed to contact weather server\n"
