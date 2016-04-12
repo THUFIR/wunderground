@@ -4,8 +4,10 @@ package require cmdline
 
 set timeout -1
 set code "nyc"
+set host rainmaker.wunderground.com
+set port 3000
 
-spawn telnet rainmaker.wunderground.com 3000
+spawn telnet $host $port
 
 while {1} {
 	expect timeout {
