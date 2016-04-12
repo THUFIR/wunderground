@@ -11,3 +11,7 @@ package require Expect 5.40
  }                                        ;#
  socket -server accept 12345              ;# Create a server socket
  vwait forever                            ;# Enter the event loop
+
+
+
+#	add telnet spawn here, and threads.

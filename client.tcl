@@ -6,7 +6,8 @@ package require Expect 5.40
 
 while {1} {
     set chan [socket 127.0.0.1 12345]         ;# Open the connection
-    puts -nonewline "Enter your name: "
+    flush stdout
+    puts -nonewline "> "
     set name [gets stdin]
     flush stdout
     puts $chan $name
