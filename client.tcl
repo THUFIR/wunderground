@@ -10,7 +10,7 @@ puts $host
 puts $port
 
 while {1} {
-    set chan [socket 127.0.0.1 7777]
+    set chan [socket 127.0.0.1 12345]
     flush stdout
     puts -nonewline "> "
     set input [gets stdin]
