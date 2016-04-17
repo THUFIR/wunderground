@@ -1,17 +1,32 @@
 package require Tcl 8.4
 package require Expect 5.40
+package require Thread
 
 
 
+socket -server NewConnection 7777
+proc NewConnection {channel peerhost peerport} {
+    fconfigure $channel -buffering none
+    set t [thread::create {
+        proc HandleConnection {channel} {
+            while {![eof $channel]} {
+                if {[gets $channel line] < 0} {
+                    continue
+                }
+                puts $channel $line
+            }
+            close $channel
+            thread::exit
+        }
+        thread::wait
+    }]
+    after 0 [list HandOver $t $channel]
+    return
+}
+proc HandOver {thread channel} {
+    thread::transfer $thread $channel
+    thread::send -async $thread [list HandleConnection $channel]
+    return
+}
+vwait _dummy_variable_
 
- proc accept {chan addr port} {           ;# Make a proc to accept connections
-     puts "$addr:$port > [gets $chan]" ;# Receive a string
-     puts $chan goodbye                   ;# Send a string
-     close $chan                          ;# Close the socket (automatically flushes)
- }                                        ;#
- socket -server accept 12345              ;# Create a server socket
- vwait forever                            ;# Enter the event loop
-
-
-
-#	add telnet spawn here, and threads.
