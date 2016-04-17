@@ -15,4 +15,9 @@ package require Thread
 
 
 
+thread::create{
+     puts "in thread [thread::id]"
+}
+
+
 #	add telnet spawn here, and threads.
