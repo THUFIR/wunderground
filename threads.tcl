@@ -5,45 +5,25 @@ package require Thread
 
 
 
-
-set num 1
-
-# Make the thread pool
-set pool [tpool::create -initcmd {
-    #source myProcedures.tcl
-}]
-
-# Sent the work into the pool as distinct jobs
-set job1 [tpool::post $pool [list startMyProc $num]]
-set job2 [tpool::post $pool [list startMyProc $num]]
-
-# Wait for all the jobs in the pool to finish
-set waitingfor [list $job1 $job2]
-while {[llength $waitingfor] > 0} {
-    tpool::wait $pool $waitingfor waitingfor
+package require Thread
+puts "*** I'm thread [thread::id]"
+# Create 3 threads
+for {set thread 1} {$thread <= 3} {incr thread} {
+set id [thread::create -joinable {
+# Print a hello message 3 times, waiting
+# a random amount of time between messages
+for {set i 1} {$i <= 3} {incr i} {
+after [expr { int(500*rand()) }]
+puts "Thread [thread::id] says hello"
 }
-
-# Get results now with tpool::get
-
-# Dispose of the pool
-tpool::release $pool
-
-
-
-
- proc accept {chan addr port} {
-     puts "$addr:$port > [gets $chan]"
-     puts $chan goodbye
-     close $chan
- }
- socket -server accept 12345
- vwait forever
-
-
-
-thread::create{
-     puts "in thread [thread::id]"
+}] ;# thread::create
+puts "*** Started thread $id"
+lappend threadIds $id
+} ;# for
+puts "*** Existing threads: [thread::names]"
+# Wait until all other threads are finished
+foreach id $threadIds {
+thread::join $id
 }
+puts "*** That's all, folks!"
 
-
-#	add telnet spawn here, and threads.
