@@ -5,7 +5,7 @@ package require Expect 5.40
 
 
  proc accept {chan addr port} {           ;# Make a proc to accept connections
-     puts "$addr:$port client says [gets $chan]" ;# Receive a string
+     puts "$addr:$port > [gets $chan]" ;# Receive a string
      puts $chan goodbye                   ;# Send a string
      close $chan                          ;# Close the socket (automatically flushes)
  }                                        ;#
