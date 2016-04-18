@@ -1,6 +1,11 @@
 package require Tcl 8.4
 package require Thread 2.5
 
+
+set sock 12345
+set host 127.0.0.1
+#set port 7777
+
 if {$argc > 0} {
 set port [lindex $argv 0]
 } else {
@@ -9,27 +14,19 @@ set port 9001
 
 socket -server _ClientConnect $port
 proc _ClientConnect {sock host port} {
-#
-#
-#
-#
-#
 }
-Tcl holds a reference to the client socket during
-this callback, so we can't transfer the channel to our
-worker thread immediately. Instead, we'll schedule an
-after event to create the worker thread and transfer
-the channel once we've re-entered the event loop.
+
+#Tcl holds a reference to the client socket during
+#this callback, so we can't transfer the channel to our
+#worker thread immediately. Instead, we'll schedule an
+#after event to create the worker thread and transfer
+#the channel once we've re-entered the event loop.
 after 0 [list ClientConnect $sock $host $port]
 proc ClientConnect {sock host port} {
-#
-#
-#
-#
-Create a separate thread to manage this client. The
-thread initialization script defines all of the client
-communication procedures and puts the thread in its
-event loop.
+#Create a separate thread to manage this client. The
+#thread initialization script defines all of the client
+#communication procedures and puts the thread in its
+#event loop.
 set thread [thread::create {
 proc ReadLine {sock} {
 if {[catch {gets $sock line} len] || [eof $sock]} {
@@ -60,15 +57,11 @@ thread::release
 thread::wait
 }]
 
-#
-#
-#
-#
-337
-Release the channel from the main thread. We use
-thread::detach/thread::attach in this case to prevent
-blocking thread::transfer and synchronous thread::send
-commands from blocking our listening socket thread.
+
+#Release the channel from the main thread. We use
+#thread::detach/thread::attach in this case to prevent
+#blocking thread::transfer and synchronous thread::send
+#commands from blocking our listening socket thread.
 # Copy the value of the socket ID into the
 # client's thread
 thread::send -async $thread [list set sock $sock]
